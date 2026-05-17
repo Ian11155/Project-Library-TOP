@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://kit.fontawesome.com/f511808af3.js" crossorigin="anonymous"></script>
+    <title>My library</title>
+</head>
+<body> 
+    <div id="container">
+        <div id="top-bar">
+            My Library
+        <button id="toggleFormBtn">New Book</button>
+        </div>
+        
+        <form id="bookForm">
+            <button type="button" id="cancelButton"><i class="fa-solid fa-xmark"></i></button>
+
+            <div>
+                <label for="author">Author:</label>
+                <br>
+                <input type="text" id="authorInput" name="author">
+                <br>
+            </div>
+
+            <div>
+                <label for="title">Title:</label>
+                <br>
+                <input type="text" id="titleInput" name="title">
+                <br>
+            </div>
+
+            <div>
+                <label for="pages">Number of pages:</label>
+                <br>
+                <input type="number" id="pagesInput" name="pages">
+                <br>
+            </div>
+
+            <div>
+                <label for="read">Status:</label>
+                <input type="radio" name="read" value="Read">Read</input>
+                <input type="radio" name="read" value="Not Read">Not Read</input>
+                <br>
+            </div>
+
+            <div>
+                <label for="coverImage">Cover Image:</label>
+                <br>
+                <input type="file" id="coverImage" name="coverImage" accept="image/*">
+                <br>
+            </div>
+
+            <button id="submitButton" type="Submit">Add book</button>
+        </form>
+            
+        <ol id="listOfBooks">
+        </ol>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
