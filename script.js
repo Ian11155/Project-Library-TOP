@@ -1,43 +1,53 @@
-const myLibrary = [];
 
 const listOfBooks = document.getElementById("listOfBooks");
 const bookForm = document.getElementById("bookForm")
 
-function Book(author, title, pages, read, img) {
-  this.author = author;
-  this.title = title;
-  this.pages = pages;
-  this.read = read;
-  this.id = crypto.randomUUID();
-  this.img = img;
+class Book {
+  constructor (author, title, pages, read, img) {
+    this.author = author;
+    this.title = title;
+    this.pages = pages;
+    this.read = read;
+    this.id = crypto.randomUUID();
+    this.img = img;
+  }
 }
 
-function addBookToLibrary(author, title, pages, read, img) {
-  const newBook = new Book(author, title, pages, read, img);
-  myLibrary.push(newBook);
+class Library {
+  constructor(){
+    this._books = []
+  }
+
+  // The '...' gathers all 5 arguments you passed into a bundle
+  addBook(...newBook) {
+    this._books.push(new Book(...newBook))
+  }
+
+  // no need to use parenthesis when called
+  get books() {
+    return this._books;
+  }
+
+  deleteBook(id){
+    this._books = this._books.filter(book => book.id != id)
+  }
 }
 
-addBookToLibrary("Charles Soule", "Star Wars: Light of the Jedi", 23, "Read", "starwar.jpg");
-addBookToLibrary("Brian Khrisna", "Seporsi Mie Ayam Sebelum Mati", 216, "Read", "ayam.jpg");
+const myLibrary = new Library;
+myLibrary.addBook("Charles Soule", "Star Wars: Light of the Jedi", 23, "Read", "starwar.jpg");
+myLibrary.addBook("Brian Khrisna", "Seporsi Mie Ayam Sebelum Mati", 216, "Read", "ayam.jpg");
 console.log(myLibrary);
 
 function listOutBooks() {
-  myLibrary.forEach((book) =>{
+  myLibrary.books.forEach((book) =>{
     const eachBooks = document.createElement("li");
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
     deleteBtn.classList.add("deleteButton");
     deleteBtn.addEventListener("click", function(){
-      let count= 0
-      myLibrary.forEach((b) =>{
-        if (b.id === book.id) {
-          myLibrary.splice(count, 1);
-          listOfBooks.innerHTML = "";
-          listOutBooks();
-          return;
-        }
-        count += 1;
-      })
+      myLibrary.deleteBook(book.id);
+      listOfBooks.innerHTML = "";
+      listOutBooks();
     });
 
     eachBooks.classList.add("book-card");
@@ -67,16 +77,19 @@ function listOutBooks() {
         <span class="value">${book.pages}</span>
         
         <span class="label">Status</span>
-        <span class="value" id="readStatus"><i class="fa-regular fa-circle-xmark"></i>${book.read}</span>`
+        <span class="value"><i class="fa-regular fa-circle-xmark"></i>${book.read}</span>`
       ;
     };
 
     const imageBox = document.createElement("div");
     imageBox.classList.add("imageBox")
     const bookImg = document.createElement("img");
-    bookImg.src = book.img ||  "No_Image_Available.jpg";
+    bookImg.src = book.img
     bookImg.alt= book.title;;
     bookImg.alt = book.title;
+    bookImg.onload = function() {
+      URL.revokeObjectURL(bookImg.src); // Frees up the memory!
+    }
     imageBox.appendChild(bookImg);
     eachBooks.prepend(imageBox);
 
@@ -122,9 +135,11 @@ bookForm.addEventListener("submit", function(event){
   const imageFile = formData.get("coverImage");
   if (imageFile && imageFile.name !== "") {
       imgURL = URL.createObjectURL(imageFile);
+  } else {
+    imgURL = "No_Image_Available.jpg";
   }
 
-  addBookToLibrary(newAuthor, newTitle, newPages, selectedRead, imgURL);
+  myLibrary.addBook(newAuthor, newTitle, newPages, selectedRead, imgURL);
   listOutBooks();
 
   bookForm.reset();
